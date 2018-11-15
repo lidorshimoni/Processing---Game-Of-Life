@@ -1,5 +1,8 @@
-int RES_X = 192;
-int RES_Y = 108;
+int SIZE = 10;
+int RES_X = 1920/SIZE;
+int RES_Y = 1080/SIZE;
+int PLAYERS = 1;
+
 
 Cell[][] cells = new Cell[RES_X][RES_Y];
  
