@@ -11,7 +11,7 @@ class Cell// extends BaseShape
   private color pen = color(255,0,0);
   private int penThickness = 0;
   private int history = 0;
-  private int team = 0;
+  private int team;// = 0;
   
   public Cell(int x, int y, int width, int height, boolean live, int team)
   {

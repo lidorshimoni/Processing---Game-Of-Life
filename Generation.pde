@@ -24,7 +24,7 @@ public void update(Cell[][] cells)
 public boolean checkNeighborhood(Cell[][] cells, int x, int y)
 {
   // 4 teams counter
-  int[] counter = new int[PLAYERS];
+  int[] counter = new int[PLAYERS+1];
   
   // removes the center cell
   if(cells[x][y].getLive())
@@ -36,11 +36,12 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
     {
       int col = (x + i + RES_X) % RES_X;
       int row = (y + j + RES_Y) % RES_Y;
+      //println("cols " + col + " row " + row);
       counter[cells[col][row].getTeam()] += cells[col][row].getLive() ? 1 : 0;
     }
   }
   boolean ret = false;
-  for(int i = 0; i<PLAYERS; i++)
+  for(int i = 0; i<PLAYERS+1 && !ret; i++)
   {
     if(counter[i]<=1 || counter[i]>3)
     {
@@ -48,8 +49,8 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
     }
     else if(counter[i]==3)
     {
-      cells[x][y].setTeam(i);
       ret =  true;
+      cells[x][y].setTeam(findBiggestIndex(counter));
     }
     else
     {
@@ -59,7 +60,15 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
   return ret;
 }
 
-public void userClick(Cell[][] cells, boolean live)
+public int findBiggestIndex(int[] arr)
+{
+  int max = max(arr);
+  for(int i = 0; i<arr.length;i++)
+    if(arr[i] == max)
+      return i;
+  return 1;
+}
+public void userClick(Cell[][] cells, boolean live, int team)
 {
   for(int i = 0; i < RES_X ; i++)
   {
@@ -68,6 +77,7 @@ public void userClick(Cell[][] cells, boolean live)
       if(cells[i][j].pointInShape(mouseX, mouseY))
       {
         cells[i][j].setLive(live);
+        cells[i][j].setTeam(team);
       }
     }
   }
