@@ -10,14 +10,24 @@ public void drawCells(Cell[][] cells)
   }
 }
 
+
 public void update(Cell[][] cells)
 {
+  boolean[][] lives = new boolean[RES_X][RES_Y];
   for(int i = 0;i < RES_X ; i++)
   {
     for(int j = 0; j < RES_Y ; j++)
     {
-      cells[i][j].setLive(checkNeighborhood(cells, i, j));
+      lives[i][j] = checkNeighborhood(cells, i, j);
     }
+  }
+  for(int i = 0;i < RES_X ; i++)
+  {
+    for(int j = 0; j < RES_Y ; j++)
+    {
+      cells[i][j].setLive(lives[i][j]);
+    }
+    
   }
 }
 

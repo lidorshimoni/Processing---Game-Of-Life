@@ -27,7 +27,7 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  }
 
  void keyPressed()
- {println("presed" + key);
+{
   if(key == '1')
     userClick(cells, true, 1);
   else if(key == '2')
