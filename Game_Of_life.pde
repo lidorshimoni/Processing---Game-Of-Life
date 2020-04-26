@@ -1,12 +1,18 @@
 int SIZE = 5;
 int RES_X = 2560/SIZE;
 int RES_Y = 1080/SIZE;
+
+float scale = 1;
+
+
+
 int PLAYERS = 3;
+
 int currentColor=0;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
 
-asd;
+
 Cell[][] cells = new Cell[RES_X][RES_Y];
  
  void setup()
@@ -19,6 +25,13 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  void draw()
  {
+     translate(-mouseX, -mouseY);
+
+   //translate(width/2, height/2);
+   scale(scale);
+   
+   
+   
    //frameRate(10);
    //delay(30);
    drawCells(cells);
@@ -78,6 +91,25 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  void mouseClicked()
  {
-   if(mouseButton == RIGHT)
+   if(mouseButton == LEFT)
+       userClick(cells, true, currentColor, 1);
+   else if(mouseButton == RIGHT)
          isPlaying=!isPlaying; 
+         
  }
+ 
+ 
+ void mouseWheel(MouseEvent event) {
+  float e = event.getCount();
+  if (e==-1)
+  {
+    scale+=0.05;
+    //translate(-mouseX, -mouseY);
+  }
+  else if (e==1 && scale>1)
+  {
+    scale-=0.05;
+
+  }
+  
+}
