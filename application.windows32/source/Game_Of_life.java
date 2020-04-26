@@ -14,11 +14,13 @@ import java.io.IOException;
 
 public class Game_Of_life extends PApplet {
 
-int SIZE = 2;
-int RES_X = 1920/SIZE;
+int SIZE = 5;
+int RES_X = 2560/SIZE;
 int RES_Y = 1080/SIZE;
-int PLAYERS = 1;
-
+int PLAYERS = 3;
+int currentColor=0;
+boolean isPlaying = false;
+boolean isSpeedHack = false;
 
 Cell[][] cells = new Cell[RES_X][RES_Y];
  
@@ -33,21 +35,66 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  public void draw()
  {
    //frameRate(10);
-   delay(30);
+   //delay(30);
    drawCells(cells);
    //int x = (int )random(192);
    //int y = (int )random(108);
    //cells[x][y].setLive(true);
-   update(cells);
+   if (isPlaying)
+     updateCells(cells);
+     if (isSpeedHack)
+     {
+       for(int i = 0;i<9;i++)
+         updateCells(cells);
+     }
+    //println(isPlaying);
+   //keyPressed();
+ }
 
+ public void keyPressed()
+{
+  if (key=='0')
+  {
+    currentColor=0;
+  }
+  else if(key == '1')
+  {
+    //userClick(cells, true, 1, 1);
+    currentColor=1;
+  }
+  else if(key == '2')
+  {
+    //userClick(cells, true, 2, 1);
+    currentColor=2;
+  }
+  else if(key == '3')
+  {
+    //userClick(cells, true, 3, 1);
+    currentColor=3;
+  }
+  else if(key == '=')
+  {
+    isSpeedHack=!isSpeedHack;
+  }
+  else if(keyCode == DELETE)
+  {
+    clearScreen(cells);
+  }
+       
  }
  
  public void mouseDragged()
  {
    if(mouseButton == LEFT)
-     userClick(cells, true);
-  else
-      userClick(cells, false);
+     userClick(cells, true, currentColor, 1);
+  //else
+      //userClick(cells, true, currentColor);
+ }
+ 
+ public void mouseClicked()
+ {
+   if(mouseButton == RIGHT)
+         isPlaying=!isPlaying; 
  }
 //abstract class BaseShape
 //{
@@ -135,7 +182,7 @@ class Cell// extends BaseShape
   private int pen = color(255,0,0);
   private int penThickness = 0;
   private int history = 0;
-  private int team = 0;
+  private int team;// = 0;
   
   public Cell(int x, int y, int width, int height, boolean live, int team)
   {
@@ -171,7 +218,7 @@ class Cell// extends BaseShape
   {
     if(history == 255)
     {
-      this.live = false;
+      //this.live = false;
       history = 0;
     }
       
@@ -228,7 +275,7 @@ class Cell// extends BaseShape
     return y;
   }
 
-  public boolean pointInShape(int x1, int y1) 
+  public boolean pointInShape(int x1, int y1, int radius) 
   {
     if (x1 >= x && x1 <= (x + width) && y1 >= y && y1 <= (y + height)) 
     {
@@ -252,13 +299,22 @@ public void drawCells(Cell[][] cells)
   }
 }
 
-public void update(Cell[][] cells)
+
+public void updateCells(Cell[][] cells)
 {
+  boolean[][] lives = new boolean[RES_X][RES_Y];
   for(int i = 0;i < RES_X ; i++)
   {
     for(int j = 0; j < RES_Y ; j++)
     {
-      cells[i][j].setLive(checkNeighborhood(cells, i, j));
+      lives[i][j] = checkNeighborhood(cells, i, j);
+    }
+  }
+  for(int i = 0;i < RES_X ; i++)
+  {
+    for(int j = 0; j < RES_Y ; j++)
+    {
+      cells[i][j].setLive(lives[i][j]);
     }
   }
 }
@@ -266,7 +322,7 @@ public void update(Cell[][] cells)
 public boolean checkNeighborhood(Cell[][] cells, int x, int y)
 {
   // 4 teams counter
-  int[] counter = new int[PLAYERS];
+  int[] counter = new int[PLAYERS+1];
   
   // removes the center cell
   if(cells[x][y].getLive())
@@ -278,11 +334,12 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
     {
       int col = (x + i + RES_X) % RES_X;
       int row = (y + j + RES_Y) % RES_Y;
+      //println("cols " + col + " row " + row);
       counter[cells[col][row].getTeam()] += cells[col][row].getLive() ? 1 : 0;
     }
   }
   boolean ret = false;
-  for(int i = 0; i<PLAYERS; i++)
+  for(int i = 0; i<PLAYERS+1 && !ret; i++)
   {
     if(counter[i]<=1 || counter[i]>3)
     {
@@ -290,8 +347,8 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
     }
     else if(counter[i]==3)
     {
-      cells[x][y].setTeam(i);
       ret =  true;
+      cells[x][y].setTeam(findBiggestIndex(counter));
     }
     else
     {
@@ -301,19 +358,49 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
   return ret;
 }
 
-public void userClick(Cell[][] cells, boolean live)
+public int findBiggestIndex(int[] arr)
 {
-  for(int i = 0; i < RES_X ; i++)
+  int max = max(arr);
+  for(int i = 0; i<arr.length;i++)
+    if(arr[i] == max)
+      return i;
+  return 1;
+}
+
+public void userClick(Cell[][] cells, boolean live, int team, int radius)
+{
+  int i = mouseX/SIZE;
+  int j = mouseY/SIZE;
+  cells[i][j].setLive(live);
+  cells[i][j].setTeam(team);
+
+}
+
+public void clearScreen(Cell[][] cells)
+{
+    for(int i = 0;i < RES_X ; i++)
   {
     for(int j = 0; j < RES_Y ; j++)
     {
-      if(cells[i][j].pointInShape(mouseX, mouseY))
-      {
-        cells[i][j].setLive(live);
-      }
+      cells[i][j].setLive(false);
     }
   }
 }
+
+//public void userClick(Cell[][] cells, boolean live, int team, int radius)
+//{
+//  for(int i = 0; i < RES_X ; i++)
+//  {
+//    for(int j = 0; j < RES_Y ; j++)
+//    {
+//      if(cells[i][j].pointInShape(mouseX, mouseY, radius))
+//      {
+//        cells[i][j].setLive(live);
+//        cells[i][j].setTeam(team);
+//      }
+//    }
+//  }
+//}
 
 public void setCells(Cell[][] cells)
 {
