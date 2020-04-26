@@ -6,6 +6,7 @@ int currentColor=0;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
 
+asd;
 Cell[][] cells = new Cell[RES_X][RES_Y];
  
  void setup()
