@@ -47,7 +47,7 @@ class Cell// extends BaseShape
   {
     if(history == 255)
     {
-      this.live = false;
+      //this.live = false;
       history = 0;
     }
       
@@ -104,7 +104,7 @@ class Cell// extends BaseShape
     return y;
   }
 
-  public boolean pointInShape(int x1, int y1) 
+  public boolean pointInShape(int x1, int y1, int radius) 
   {
     if (x1 >= x && x1 <= (x + width) && y1 >= y && y1 <= (y + height)) 
     {

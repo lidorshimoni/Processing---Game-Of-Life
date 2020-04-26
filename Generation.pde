@@ -10,13 +10,22 @@ public void drawCells(Cell[][] cells)
   }
 }
 
-public void update(Cell[][] cells)
+
+public void updateCells(Cell[][] cells)
 {
+  boolean[][] lives = new boolean[RES_X][RES_Y];
   for(int i = 0;i < RES_X ; i++)
   {
     for(int j = 0; j < RES_Y ; j++)
     {
-      cells[i][j].setLive(checkNeighborhood(cells, i, j));
+      lives[i][j] = checkNeighborhood(cells, i, j);
+    }
+  }
+  for(int i = 0;i < RES_X ; i++)
+  {
+    for(int j = 0; j < RES_Y ; j++)
+    {
+      cells[i][j].setLive(lives[i][j]);
     }
   }
 }
@@ -68,17 +77,38 @@ public int findBiggestIndex(int[] arr)
       return i;
   return 1;
 }
-public void userClick(Cell[][] cells, boolean live, int team)
+
+public void userClick(Cell[][] cells, boolean live, int team, int radius)
 {
-  for(int i = 0; i < RES_X ; i++)
+  int i = mouseX/SIZE;
+  int j = mouseY/SIZE;
+  cells[i][j].setLive(live);
+  cells[i][j].setTeam(team);
+
+}
+
+public void clearScreen(Cell[][] cells)
+{
+    for(int i = 0;i < RES_X ; i++)
   {
     for(int j = 0; j < RES_Y ; j++)
     {
-      if(cells[i][j].pointInShape(mouseX, mouseY))
-      {
-        cells[i][j].setLive(live);
-        cells[i][j].setTeam(team);
-      }
+      cells[i][j].setLive(false);
     }
   }
 }
+
+//public void userClick(Cell[][] cells, boolean live, int team, int radius)
+//{
+//  for(int i = 0; i < RES_X ; i++)
+//  {
+//    for(int j = 0; j < RES_Y ; j++)
+//    {
+//      if(cells[i][j].pointInShape(mouseX, mouseY, radius))
+//      {
+//        cells[i][j].setLive(live);
+//        cells[i][j].setTeam(team);
+//      }
+//    }
+//  }
+//}

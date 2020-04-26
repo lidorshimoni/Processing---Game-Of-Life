@@ -5,7 +5,7 @@ public void setCells(Cell[][] cells)
   {
     for(int j = 0; j < RES_Y; j++)
     {
-      cells[i][j] = new Cell(i*SIZE, j*SIZE, SIZE, SIZE, true, 0);
+      cells[i][j] = new Cell(i*SIZE, j*SIZE, SIZE, SIZE, false, 0);
     }
   }
 }
