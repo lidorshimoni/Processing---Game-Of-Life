@@ -80,11 +80,29 @@ public int findBiggestIndex(int[] arr)
 
 public void userClick(Cell[][] cells, boolean live, int team, int radius)
 {
-  int i = mouseX/SIZE;
-  int j = mouseY/SIZE;
-  cells[i][j].setLive(live);
-  cells[i][j].setTeam(team);
-
+  int x = mouseX/SIZE;
+  int y = mouseY/SIZE;
+  if (radius == 0)
+  {
+    cells[x][y].setLive(live);
+    cells[x][y].setTeam(team);
+  }
+  else
+  {
+    for(int i=-radius;i<radius;i++)
+    {
+      if(x+i<0 || x+i>=RES_X)
+        continue;
+      for(int j=-radius;j<radius;j++)
+      {
+        if(y+j<0 || y+j>=RES_X)
+          continue;
+        
+        cells[x+i][y+j].setLive(live);
+        cells[x+i][y+j].setTeam(team);
+      }
+    }
+  }
 }
 
 public void clearScreen(Cell[][] cells)

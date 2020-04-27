@@ -17,10 +17,19 @@ public class Game_Of_life extends PApplet {
 int SIZE = 5;
 int RES_X = 2560/SIZE;
 int RES_Y = 1080/SIZE;
+
+float scale = 1;
+float xPan = 0;
+float yPan = 0;
+
+
 int PLAYERS = 3;
+
 int currentColor=0;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
+int radius = 10;
+
 
 Cell[][] cells = new Cell[RES_X][RES_Y];
  
@@ -34,6 +43,12 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  public void draw()
  {
+   
+   //translate(width/2, height/2);
+   translate(xPan, yPan);
+   scale(scale);
+   translate(-xPan, -yPan);
+   
    //frameRate(10);
    //delay(30);
    drawCells(cells);
@@ -59,17 +74,14 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
   }
   else if(key == '1')
   {
-    //userClick(cells, true, 1, 1);
     currentColor=1;
   }
   else if(key == '2')
   {
-    //userClick(cells, true, 2, 1);
     currentColor=2;
   }
   else if(key == '3')
   {
-    //userClick(cells, true, 3, 1);
     currentColor=3;
   }
   else if(key == '=')
@@ -86,16 +98,36 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  public void mouseDragged()
  {
    if(mouseButton == LEFT)
-     userClick(cells, true, currentColor, 1);
-  //else
-      //userClick(cells, true, currentColor);
+     userClick(cells, true, currentColor, radius);
  }
  
  public void mouseClicked()
  {
-   if(mouseButton == RIGHT)
+   if(mouseButton == LEFT)
+       userClick(cells, true, currentColor, radius);
+   else if(mouseButton == RIGHT)
          isPlaying=!isPlaying; 
+         
  }
+ 
+ 
+ public void mouseWheel(MouseEvent event) {
+  float e = event.getCount();
+  if (e==-1)
+  {
+    scale+=0.05f;
+    xPan=mouseX;
+    yPan=mouseY;
+
+  }
+  else if (e==1 && scale>1)
+  {
+    scale-=0.05f;
+    if(scale<1)
+      scale=1;
+  }
+  
+}
 //abstract class BaseShape
 //{
 //  public float rotation = 0;
@@ -369,11 +401,29 @@ public int findBiggestIndex(int[] arr)
 
 public void userClick(Cell[][] cells, boolean live, int team, int radius)
 {
-  int i = mouseX/SIZE;
-  int j = mouseY/SIZE;
-  cells[i][j].setLive(live);
-  cells[i][j].setTeam(team);
-
+  int x = mouseX/SIZE;
+  int y = mouseY/SIZE;
+  if (radius == 0)
+  {
+    cells[x][y].setLive(live);
+    cells[x][y].setTeam(team);
+  }
+  else
+  {
+    for(int i=-radius;i<radius;i++)
+    {
+      if(x+i<0 || x+i>=RES_X)
+        continue;
+      for(int j=-radius;j<radius;j++)
+      {
+        if(y+j<0 || y+j>=RES_X)
+          continue;
+        
+        cells[x+i][y+j].setLive(live);
+        cells[x+i][y+j].setTeam(team);
+      }
+    }
+  }
 }
 
 public void clearScreen(Cell[][] cells)

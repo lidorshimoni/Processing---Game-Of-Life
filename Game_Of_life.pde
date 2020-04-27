@@ -1,9 +1,10 @@
-int SIZE = 5;
+int SIZE = 4;
 int RES_X = 2560/SIZE;
 int RES_Y = 1080/SIZE;
 
 float scale = 1;
-
+float xPan = 0;
+float yPan = 0;
 
 
 int PLAYERS = 3;
@@ -11,6 +12,7 @@ int PLAYERS = 3;
 int currentColor=0;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
+int radius = 5;
 
 
 Cell[][] cells = new Cell[RES_X][RES_Y];
@@ -25,12 +27,11 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  void draw()
  {
-     translate(-mouseX, -mouseY);
-
+   
    //translate(width/2, height/2);
+   translate(xPan, yPan);
    scale(scale);
-   
-   
+   translate(-xPan, -yPan);
    
    //frameRate(10);
    //delay(30);
@@ -57,17 +58,14 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
   }
   else if(key == '1')
   {
-    //userClick(cells, true, 1, 1);
     currentColor=1;
   }
   else if(key == '2')
   {
-    //userClick(cells, true, 2, 1);
     currentColor=2;
   }
   else if(key == '3')
   {
-    //userClick(cells, true, 3, 1);
     currentColor=3;
   }
   else if(key == '=')
@@ -84,15 +82,13 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  void mouseDragged()
  {
    if(mouseButton == LEFT)
-     userClick(cells, true, currentColor, 1);
-  //else
-      //userClick(cells, true, currentColor);
+     userClick(cells, true, currentColor, radius);
  }
  
  void mouseClicked()
  {
    if(mouseButton == LEFT)
-       userClick(cells, true, currentColor, 1);
+       userClick(cells, true, currentColor, radius);
    else if(mouseButton == RIGHT)
          isPlaying=!isPlaying; 
          
@@ -104,12 +100,15 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
   if (e==-1)
   {
     scale+=0.05;
-    //translate(-mouseX, -mouseY);
+    xPan=mouseX;
+    yPan=mouseY;
+
   }
   else if (e==1 && scale>1)
   {
     scale-=0.05;
-
+    if(scale<1)
+      scale=1;
   }
   
 }
