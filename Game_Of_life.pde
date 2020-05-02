@@ -1,4 +1,4 @@
-int SIZE = 4;
+int SIZE = 10;
 int RES_X = 2560/SIZE;
 int RES_Y = 1080/SIZE;
 
@@ -12,7 +12,7 @@ int PLAYERS = 3;
 int currentColor=0;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
-int radius = 5;
+int radius = 20;
 
 
 Cell[][] cells = new Cell[RES_X][RES_Y];
@@ -36,8 +36,8 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
    //frameRate(10);
    //delay(30);
    drawCells(cells);
-   //int x = (int )random(192);
-   //int y = (int )random(108);
+   //int x = (int )random(RES_X);
+   //int y = (int )random(RES_Y);
    //cells[x][y].setLive(true);
    if (isPlaying)
      updateCells(cells);

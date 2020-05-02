@@ -90,7 +90,8 @@ class Cell// extends BaseShape
 
     //x += this.advanceSpeedX();
     //y += this.advanceSpeedY();
-
+    strokeWeight(0.01);
+    stroke(255);
     rect(x, y, width, height);
   }
 
