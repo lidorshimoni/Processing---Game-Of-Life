@@ -10,8 +10,8 @@ class Cell// extends BaseShape
   private int alpha = 255;
   private color pen = color(255,0,0);
   private int penThickness = 0;
-  private int history = 0;
-  private int team;// = 0;
+  private int deadTime = 0;
+  private int team = 1;
   
   public Cell(int x, int y, int width, int height, boolean live, int team)
   {
@@ -20,7 +20,7 @@ class Cell// extends BaseShape
     this.width = width;
     this.height = height;
     this.live = live;
-    this.team = team;
+    this.team = team-1;
   }
   
   public void setLive(boolean live)
@@ -40,21 +40,19 @@ class Cell// extends BaseShape
   
   public void setTeam(int team)
   {
-    this.team = team;
+    this.team = team-1;
   }
   
   protected void drawIt() 
   {
-    if(history == 255)
-    {
-      //this.live = false;
-      history = 0;
-    }
       
     if(this.live)
     {
       switch(team)
       {
+        case 0:
+          brush = colors[0];
+          break;
         case 1:
           brush = colors[1];
           break;
@@ -67,13 +65,32 @@ class Cell// extends BaseShape
        default:
          brush = colors[0];          
       }
-      //brush = /*color(255,255,255);//*/color(history%255,history%255,history%255);
-      history+=15;
+      this.deadTime = 200/2;
     }
     else
     {
-       brush = 0;
-       //history--;
+      if (this.deadTime >0)
+      {
+        switch(team)
+        {
+          case 0:
+            brush = color(this.deadTime*2, this.deadTime*2, this.deadTime*2); 
+            break;
+          case 1:
+            brush = color(this.deadTime*2, 0, this.deadTime/2); 
+            break;
+          case 2:
+            brush = color(this.deadTime/5, this.deadTime*2, 0); 
+            break;
+          case 3:
+            brush = color(0, this.deadTime/1.5, this.deadTime*2);
+            break;
+         default:
+           brush = color(0, this.deadTime*2, this.deadTime*2);         
+        }
+        this.deadTime-=1;
+      }
+       
     }
     brush = (brush & 0xffffff) | (alpha << 24);
     pen = (pen & 0xffffff) | (alpha << 24);
@@ -87,11 +104,6 @@ class Cell// extends BaseShape
       strokeWeight(penThickness);
       stroke(pen);
     }
-
-    //x += this.advanceSpeedX();
-    //y += this.advanceSpeedY();
-    strokeWeight(0.01);
-    stroke(255);
     rect(x, y, width, height);
   }
 

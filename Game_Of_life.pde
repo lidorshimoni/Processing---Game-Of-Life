@@ -9,7 +9,7 @@ float yPan = 0;
 
 int PLAYERS = 3;
 
-int currentColor=0;
+int currentColor=1;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
 int radius = 20;
@@ -27,36 +27,25 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  void draw()
  {
-   
-   //translate(width/2, height/2);
    translate(xPan, yPan);
    scale(scale);
    translate(-xPan, -yPan);
-   
-   //frameRate(10);
-   //delay(30);
+
    drawCells(cells);
-   //int x = (int )random(RES_X);
-   //int y = (int )random(RES_Y);
-   //cells[x][y].setLive(true);
    if (isPlaying)
+   {
      updateCells(cells);
      if (isSpeedHack)
      {
        for(int i = 0;i<9;i++)
          updateCells(cells);
      }
-    //println(isPlaying);
-   //keyPressed();
+   }
  }
 
  void keyPressed()
 {
-  if (key=='0')
-  {
-    currentColor=0;
-  }
-  else if(key == '1')
+  if (key=='1')
   {
     currentColor=1;
   }
@@ -67,6 +56,10 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
   else if(key == '3')
   {
     currentColor=3;
+  }
+  else if(key == '4')
+  {
+    currentColor=4;
   }
   else if(key == '=')
   {
@@ -87,7 +80,7 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  void mouseClicked()
  {
-   if(mouseButton == LEFT)
+   if(mouseButton == LEFT )
        userClick(cells, true, currentColor, radius);
    else if(mouseButton == RIGHT)
          isPlaying=!isPlaying; 

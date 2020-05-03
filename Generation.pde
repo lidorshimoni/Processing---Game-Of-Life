@@ -59,7 +59,7 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
     else if(counter[i]==3)
     {
       ret =  true;
-      cells[x][y].setTeam(findBiggestIndex(counter));
+      cells[x][y].setTeam(findBiggestIndex(counter)+1);
     }
     else
     {
