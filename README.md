@@ -13,7 +13,7 @@ just messing around with the features and trying to make it playable
 * multi player game
 
 ## Example
-![Example](Else/pic1.PNG "Example")
+![Example](Else/pic1.png "Example")
 
 
 ## Dependencies
