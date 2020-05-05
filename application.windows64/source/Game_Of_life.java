@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class Game_Of_life extends PApplet {
 
-int SIZE = 5;
+int SIZE = 10;
 int RES_X = 2560/SIZE;
 int RES_Y = 1080/SIZE;
 
@@ -25,10 +25,10 @@ float yPan = 0;
 
 int PLAYERS = 3;
 
-int currentColor=0;
+int currentColor=1;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
-int radius = 10;
+int radius = 20;
 
 
 Cell[][] cells = new Cell[RES_X][RES_Y];
@@ -43,36 +43,25 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  public void draw()
  {
-   
-   //translate(width/2, height/2);
    translate(xPan, yPan);
    scale(scale);
    translate(-xPan, -yPan);
-   
-   //frameRate(10);
-   //delay(30);
+
    drawCells(cells);
-   //int x = (int )random(192);
-   //int y = (int )random(108);
-   //cells[x][y].setLive(true);
    if (isPlaying)
+   {
      updateCells(cells);
      if (isSpeedHack)
      {
        for(int i = 0;i<9;i++)
          updateCells(cells);
      }
-    //println(isPlaying);
-   //keyPressed();
+   }
  }
 
  public void keyPressed()
 {
-  if (key=='0')
-  {
-    currentColor=0;
-  }
-  else if(key == '1')
+  if (key=='1')
   {
     currentColor=1;
   }
@@ -83,6 +72,10 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
   else if(key == '3')
   {
     currentColor=3;
+  }
+  else if(key == '4')
+  {
+    currentColor=4;
   }
   else if(key == '=')
   {
@@ -103,7 +96,7 @@ Cell[][] cells = new Cell[RES_X][RES_Y];
  
  public void mouseClicked()
  {
-   if(mouseButton == LEFT)
+   if(mouseButton == LEFT )
        userClick(cells, true, currentColor, radius);
    else if(mouseButton == RIGHT)
          isPlaying=!isPlaying; 
@@ -213,8 +206,8 @@ class Cell// extends BaseShape
   private int alpha = 255;
   private int pen = color(255,0,0);
   private int penThickness = 0;
-  private int history = 0;
-  private int team;// = 0;
+  private int deadTime = 0;
+  private int team = 1;
   
   public Cell(int x, int y, int width, int height, boolean live, int team)
   {
@@ -223,7 +216,7 @@ class Cell// extends BaseShape
     this.width = width;
     this.height = height;
     this.live = live;
-    this.team = team;
+    this.team = team-1;
   }
   
   public void setLive(boolean live)
@@ -243,21 +236,19 @@ class Cell// extends BaseShape
   
   public void setTeam(int team)
   {
-    this.team = team;
+    this.team = team-1;
   }
   
   protected void drawIt() 
   {
-    if(history == 255)
-    {
-      //this.live = false;
-      history = 0;
-    }
       
     if(this.live)
     {
       switch(team)
       {
+        case 0:
+          brush = colors[0];
+          break;
         case 1:
           brush = colors[1];
           break;
@@ -270,13 +261,32 @@ class Cell// extends BaseShape
        default:
          brush = colors[0];          
       }
-      //brush = /*color(255,255,255);//*/color(history%255,history%255,history%255);
-      history+=15;
+      this.deadTime = 200/2;
     }
     else
     {
-       brush = 0;
-       //history--;
+      if (this.deadTime >0)
+      {
+        switch(team)
+        {
+          case 0:
+            brush = color(this.deadTime*2, this.deadTime*2, this.deadTime*2); 
+            break;
+          case 1:
+            brush = color(this.deadTime*2, 0, this.deadTime/2); 
+            break;
+          case 2:
+            brush = color(this.deadTime/5, this.deadTime*2, 0); 
+            break;
+          case 3:
+            brush = color(0, this.deadTime/1.5f, this.deadTime*2);
+            break;
+         default:
+           brush = color(0, this.deadTime*2, this.deadTime*2);         
+        }
+        this.deadTime-=1;
+      }
+       
     }
     brush = (brush & 0xffffff) | (alpha << 24);
     pen = (pen & 0xffffff) | (alpha << 24);
@@ -290,10 +300,6 @@ class Cell// extends BaseShape
       strokeWeight(penThickness);
       stroke(pen);
     }
-
-    //x += this.advanceSpeedX();
-    //y += this.advanceSpeedY();
-
     rect(x, y, width, height);
   }
 
@@ -380,7 +386,7 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
     else if(counter[i]==3)
     {
       ret =  true;
-      cells[x][y].setTeam(findBiggestIndex(counter));
+      cells[x][y].setTeam(findBiggestIndex(counter)+1);
     }
     else
     {
@@ -416,7 +422,7 @@ public void userClick(Cell[][] cells, boolean live, int team, int radius)
         continue;
       for(int j=-radius;j<radius;j++)
       {
-        if(y+j<0 || y+j>=RES_X)
+        if(y+j<0 || y+j>=RES_Y)
           continue;
         
         cells[x+i][y+j].setLive(live);
@@ -458,7 +464,7 @@ public void setCells(Cell[][] cells)
   {
     for(int j = 0; j < RES_Y; j++)
     {
-      cells[i][j] = new Cell(i*SIZE, j*SIZE, SIZE, SIZE, false, 0);
+      cells[i][j] = new Cell(i*SIZE, j*SIZE, SIZE, SIZE, false, 1);
     }
   }
 }
@@ -470,11 +476,7 @@ public void setRandomCells(Cell[][] cells)
   {
     for(int j = 0; j < RES_Y; j++)
     {
-      //if((int)random(0,25) == 1)
-      //{
-      //  live = true;
-      //}
-      cells[i][j] = new Cell(i*SIZE, j*SIZE, SIZE, SIZE, live, 0);
+      cells[i][j] = new Cell(i*SIZE, j*SIZE, SIZE, SIZE, live, 1);
       live = false;
     }
   }

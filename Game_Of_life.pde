@@ -12,7 +12,7 @@ int PLAYERS = 3;
 int currentColor=1;
 boolean isPlaying = false;
 boolean isSpeedHack = false;
-int radius = 5;
+int radius = 20;
 
 
 Cell[][] cells = new Cell[RES_X][RES_Y];

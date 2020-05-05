@@ -59,7 +59,7 @@ public boolean checkNeighborhood(Cell[][] cells, int x, int y)
     else if(counter[i]==3)
     {
       ret =  true;
-      cells[x][y].setTeam(findBiggestIndex(counter));
+      cells[x][y].setTeam(findBiggestIndex(counter)+1);
     }
     else
     {
@@ -95,7 +95,7 @@ public void userClick(Cell[][] cells, boolean live, int team, int radius)
         continue;
       for(int j=-radius;j<radius;j++)
       {
-        if(y+j<0 || y+j>=RES_X)
+        if(y+j<0 || y+j>=RES_Y)
           continue;
         
         cells[x+i][y+j].setLive(live);
